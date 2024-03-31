@@ -1,6 +1,6 @@
 import ReactPlayer from "react-player";
 import React, {RefObject} from "react";
-import {StudentParticipation} from "../Api/dto/StudentParticipation";
+import {StudentParticipation} from "../../models/StudentParticipation";
 import {Skeleton} from "@mui/material";
 
 interface VideoPlayerProps {
@@ -11,7 +11,7 @@ interface VideoPlayerProps {
 
 function VideoPlayer({playerRef, focusedStudent, onError}: VideoPlayerProps) {
     if (!focusedStudent) {
-        return (<Skeleton variant="rectangular" width={"100%"} height={"480px"} />);
+        return (<Skeleton variant="rectangular" width={"100%"} height={"480px"}/>);
     }
     return (
         <ReactPlayer

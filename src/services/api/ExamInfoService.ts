@@ -3,7 +3,7 @@ import axios from "axios";
 export const getExamDetails = async (examId: string, sessionId: string | undefined) => {
     if (!examId) {
         console.error('No examId provided for getExamDetails');
-        return; 
+        return;
     }
     const url = sessionId ? `/exam/${examId}/session/${sessionId}` : `/exam/${examId}`;
     try {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {StudentParticipation} from "./dto/StudentParticipation";
+import {StudentParticipation} from "../../models/StudentParticipation";
 
 export async function getStudentParticipations(examId: string | undefined, sessionId: string | undefined) {
     if (!examId || !sessionId || isNaN(parseInt(sessionId))) {

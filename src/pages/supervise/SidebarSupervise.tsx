@@ -1,4 +1,4 @@
-import {ConnectionStatus, StudentParticipation} from "../Api/dto/StudentParticipation";
+import {ConnectionStatus, StudentParticipation} from "../../models/StudentParticipation";
 import React, {ReactElement, useState} from "react";
 import {
     RadioButtonCheckedSharp,
@@ -19,10 +19,10 @@ const connectionStatusColor: Record<ConnectionStatus, ConnectionStatusColor> = {
     [ConnectionStatus.TERMINATED]: "error",
 };
 const connectionStatusIcon: Record<ConnectionStatus, ReactElement> = {
-    [ConnectionStatus.CONNECTED]: <SignalCellular4BarRounded style={{ fontSize: 15 }}/>,
-    [ConnectionStatus.DISCONNECTED]: <SignalCellularOffRounded style={{ fontSize: 15 }}/>,
-    [ConnectionStatus.CONNECTING]: <SignalCellular2BarRounded style={{ fontSize: 15 }}/>,
-    [ConnectionStatus.TERMINATED]: <SignalCellularNodataRounded style={{ fontSize: 15 }}/>,
+    [ConnectionStatus.CONNECTED]: <SignalCellular4BarRounded style={{fontSize: 15}}/>,
+    [ConnectionStatus.DISCONNECTED]: <SignalCellularOffRounded style={{fontSize: 15}}/>,
+    [ConnectionStatus.CONNECTING]: <SignalCellular2BarRounded style={{fontSize: 15}}/>,
+    [ConnectionStatus.TERMINATED]: <SignalCellularNodataRounded style={{fontSize: 15}}/>,
 };
 
 interface StudentCardProps {
@@ -39,7 +39,7 @@ interface NotificationCardProps {
 
 function StudentCard({student, onClick, selected}: StudentCardProps) {
     const isSmallScreen = useMediaQuery('(max-width:820px)');
-    
+
     return (
         <Card
             sx={{mb: 1}}
@@ -50,7 +50,7 @@ function StudentCard({student, onClick, selected}: StudentCardProps) {
             <CardContent style={{padding: 1}}>
                 <div className="flex flex-row justify-between pt-1 ">
                     <Chip
-                        sx={{ p: 0, ml: 1, fontSize: '0.7rem', ...(isSmallScreen && { fontSize: '0.6rem', px: 0})}}
+                        sx={{p: 0, ml: 1, fontSize: '0.7rem', ...(isSmallScreen && {fontSize: '0.6rem', px: 0})}}
                         variant="outlined"
                         size={"small"}
                         label={student.status}
@@ -59,7 +59,7 @@ function StudentCard({student, onClick, selected}: StudentCardProps) {
                     />
                     {
                         student.recording &&
-                        <RadioButtonCheckedSharp 
+                        <RadioButtonCheckedSharp
                             className="animate-pulse"
                             color={"error"}
                             sx={{mr: 1, fontSize: '1.2rem'}}
@@ -68,11 +68,11 @@ function StudentCard({student, onClick, selected}: StudentCardProps) {
                 </div>
             </CardContent>
 
-            <CardHeader 
-                    sx={{px: 0, py: 0.3, ml: 2}}
-                    className="flex justify-between truncate" 
-                    titleTypographyProps={{variant:'h5' }}
-                    title={student.fullName}
+            <CardHeader
+                sx={{px: 0, py: 0.3, ml: 2}}
+                className="flex justify-between truncate"
+                titleTypographyProps={{variant: 'h5'}}
+                title={student.fullName}
             />
         </Card>
     );

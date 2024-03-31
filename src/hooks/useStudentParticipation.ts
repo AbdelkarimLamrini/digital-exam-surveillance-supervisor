@@ -1,5 +1,5 @@
 import {useQuery} from "react-query";
-import {getStudentParticipations} from "../Api/StudentParticipationService";
+import {getStudentParticipations} from "../services/api/StudentParticipationService";
 
 export function useGetStudentParticipations(examId: string | undefined, sessionId: string | undefined) {
     const query = useQuery(["getStudentParticipations", examId, sessionId], () => getStudentParticipations(examId, sessionId));

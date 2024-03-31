@@ -1,10 +1,10 @@
 import axios from "axios";
-import {CreateExamDto, GetAllExamsDto} from "./dto/Exam";
+import {Exam, ExamDto, NewExamDto} from "../../models/Exam";
 
 
-export const createExam = async (data: CreateExamDto) => {
+export const createExam = async (data: NewExamDto) => {
     try {
-        const response = await axios.post('/exam', data, {
+        const response = await axios.post('/exams', data, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -18,7 +18,7 @@ export const createExam = async (data: CreateExamDto) => {
 
 export const deleteExam = async (id: string) => {
     try {
-        await axios.delete(`/exam/${id}`);
+        await axios.delete(`/exams/${id}`);
     } catch (error) {
         console.error('Error deleting exam', error);
         throw error;
@@ -26,19 +26,19 @@ export const deleteExam = async (id: string) => {
 }
 
 
-export const getAllExams = async () => {
+export const getExams = async (): Promise<Exam[]> => {
     try {
-        const response = await axios.get('/exam');
-        return response.data;
+        const response = await axios.get<ExamDto[]>('/exams');
+        return response.data.map(examDto => new Exam(examDto));
     } catch (error) {
         console.error('Error getting exams', error);
         throw error;
     }
 }
 
-export const updateExam = async (id: string, data: GetAllExamsDto) => {
+export const updateExam = async (id: string, data: ExamDto) => {
     try {
-        const response = await axios.put(`/exam/${id}`, data, {
+        const response = await axios.put(`/exams/${id}`, data, {
             headers: {
                 'Content-Type': 'application/json'
             }

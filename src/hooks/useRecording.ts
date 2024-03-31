@@ -1,15 +1,15 @@
 import {useMutation, useQueryClient} from "react-query";
-import {startRecording, stopRecording} from "../Api/RecordService";
+import {startRecording, stopRecording} from "../services/api/RecordService";
 
 export function useStartRecording(invalidateQueryKey = "recordings") {
     const queryClient = useQueryClient();
 
-    const { 
-        mutate, 
-        isLoading: isLoadingStartingRecording, 
-        isError: isErrorStartingRecording, 
-        error: errorStartingRecording, 
-        isSuccess: isSuccessStartingRecording, 
+    const {
+        mutate,
+        isLoading: isLoadingStartingRecording,
+        isError: isErrorStartingRecording,
+        error: errorStartingRecording,
+        isSuccess: isSuccessStartingRecording,
     } = useMutation((studentParticipationId: string) => startRecording(studentParticipationId), {
         onSuccess: () => {
             queryClient.invalidateQueries([invalidateQueryKey]);
@@ -32,12 +32,12 @@ export function useStartRecording(invalidateQueryKey = "recordings") {
 export function useStopRecording(invalidateQueryKey = "recordings") {
     const queryClient = useQueryClient();
 
-    const { 
-        mutate, 
-        isLoading: isLoadingStoppingRecording, 
-        isError: isErrorStoppingRecording, 
-        error: errorStoppingRecording, 
-        isSuccess: isSuccessStoppingRecording, 
+    const {
+        mutate,
+        isLoading: isLoadingStoppingRecording,
+        isError: isErrorStoppingRecording,
+        error: errorStoppingRecording,
+        isSuccess: isSuccessStoppingRecording,
     } = useMutation((studentParticipationId: string) => stopRecording(studentParticipationId), {
         onSuccess: () => {
             queryClient.invalidateQueries([invalidateQueryKey]);

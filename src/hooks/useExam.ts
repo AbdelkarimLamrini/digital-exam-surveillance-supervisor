@@ -1,7 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {createExam, deleteExam, getAllExams, updateExam} from "../Api/ExamService";
-import {CreateExamDto, GetAllExamsDto} from "../Api/dto/Exam";
-import {getExamDetails} from "../Api/ExamInfoService";
+import {createExam, deleteExam, getExams, updateExam} from "../services/api/ExamService";
+import {NewExamDto, ExamDto} from "../models/Exam";
+import {getExamDetails} from "../services/api/ExamInfoService";
 
 
 export function useExam(invalidateQueryKey = "createExam") {
@@ -11,9 +11,9 @@ export function useExam(invalidateQueryKey = "createExam") {
         mutate,
         isLoading: isLoadingCreatingExam,
         isError: isErrorCreatingExam,
-        error: errorCreatingExam, 
-        isSuccess: isSuccessCreatingExam, 
-    } = useMutation((data: CreateExamDto) => createExam(data), {
+        error: errorCreatingExam,
+        isSuccess: isSuccessCreatingExam,
+    } = useMutation((data: NewExamDto) => createExam(data), {
         onSuccess: () => {
             queryClient.invalidateQueries([invalidateQueryKey]);
         },
@@ -26,49 +26,47 @@ export function useExam(invalidateQueryKey = "createExam") {
         mutateCreateExam: mutate,
         isLoadingCreatingExam,
         isErrorCreatingExam,
-        errorCreatingExam, 
-        isSuccessCreatingExam, 
+        errorCreatingExam,
+        isSuccessCreatingExam,
     };
 }
 
-export function useGetAllExams(){
-    const query = useQuery(["getAllExams"], () => getAllExams());
+export function useGetExams() {
+    const query = useQuery(["getExams"], () => getExams());
 
     return {
-        data: query.data,
-        isLoadingGettingAllExams: query.isLoading,
-        isErrorGettingAllExams: query.isError,
-        errorGettingAllExams: query.error, 
-        isSuccessGettingAllExams: query.isSuccess, 
+        exams: query.data,
+        errorGettingExams: query.error,
+        statusGettingExams: query.status
     }
 }
 
 
-export function useUpdateExam(invalidateQueryKey = "updateexam") {
+export function useUpdateExam(invalidateQueryKey = "updateExam") {
     const queryClient = useQueryClient();
 
     const {
         mutate,
         isLoading: isLoadingUpdatingExam,
         isError: isErrorUpdatingExam,
-        error: errorUpdatingExam, 
-        isSuccess: isSuccessUpdatingExam, 
+        error: errorUpdatingExam,
+        isSuccess: isSuccessUpdatingExam,
     } = useMutation(
-        ({ id, data }: { id: string; data: GetAllExamsDto }) => updateExam(id,data), {
-        onSuccess: () => {
-            queryClient.invalidateQueries([invalidateQueryKey]);
-        },
-        onError: (error) => {
-            console.error('Error creating exam:', error);
-        },
-    });
+        ({id, data}: { id: string; data: ExamDto }) => updateExam(id, data), {
+            onSuccess: () => {
+                queryClient.invalidateQueries([invalidateQueryKey]);
+            },
+            onError: (error) => {
+                console.error('Error creating exam:', error);
+            },
+        });
 
     return {
         mutateCreateExam: mutate,
         isLoadingUpdatingExam,
         isErrorUpdatingExam,
-        errorUpdatingExam, 
-        isSuccessUpdatingExam, 
+        errorUpdatingExam,
+        isSuccessUpdatingExam,
     };
 }
 
@@ -79,11 +77,11 @@ export function useDeleteExam() {
         mutate,
         isLoading: isLoadingDeletingExam,
         isError: isErrorDeletingExam,
-        error: errorDeletingExam, 
-        isSuccess: isSuccessDeletingExam, 
+        error: errorDeletingExam,
+        isSuccess: isSuccessDeletingExam,
     } = useMutation((id: string) => deleteExam(id), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['getAllExams']);
+            queryClient.invalidateQueries(['getExams']);
         },
         onError: (error) => {
             console.error('Error deleting exam:', error);
@@ -94,8 +92,8 @@ export function useDeleteExam() {
         mutateDeleteExam: mutate,
         isLoadingDeletingExam,
         isErrorDeletingExam,
-        errorDeletingExam, 
-        isSuccessDeletingExam, 
+        errorDeletingExam,
+        isSuccessDeletingExam,
     };
 }
 
@@ -103,9 +101,9 @@ export function useExamInfo(examId: string, sessionId: string | undefined) {
     const queryClient = useQueryClient();
 
     const query = useQuery(["getExamDetails", examId, sessionId], () => getExamDetails(examId, sessionId), {
-        enabled: !!examId, 
+        enabled: !!examId,
         onSuccess: () => {
-            
+
             queryClient.invalidateQueries(['getExamDetails']);
         },
         onError: (error) => {
@@ -117,8 +115,8 @@ export function useExamInfo(examId: string, sessionId: string | undefined) {
         data: query.data,
         isLoading: query.isLoading,
         isError: query.isError,
-        error: query.error, 
-        isSuccess: query.isSuccess, 
+        error: query.error,
+        isSuccess: query.isSuccess,
     };
 }
 

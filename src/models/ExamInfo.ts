@@ -4,6 +4,6 @@ export interface ExamDetails {
     examName: string;
     classRoomId: string;
     supervisorName: string;
-    startTime: string; 
-    endTime: string;  
+    startTime: string;
+    endTime: string;
 }

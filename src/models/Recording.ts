@@ -3,7 +3,7 @@ import {StudentParticipation} from "./StudentParticipation";
 class Recording {
     id: number | null;
     studentParticipation: StudentParticipation;
-    startTime: Date; 
+    startTime: Date;
     endTime: Date;
     recordingUrl: string;
 
@@ -13,11 +13,11 @@ class Recording {
         endTime: Date,
         recordingUrl: string
     ) {
-        this.id = null; 
-        this.studentParticipation = studentParticipation; 
+        this.id = null;
+        this.studentParticipation = studentParticipation;
         this.startTime = startTime;
-        this.endTime = endTime; 
-        this.recordingUrl = recordingUrl; 
+        this.endTime = endTime;
+        this.recordingUrl = recordingUrl;
     }
 }
 

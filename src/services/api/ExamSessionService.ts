@@ -1,5 +1,5 @@
 import axios from "axios";
-import {CreateExamSessionDto} from "./dto/ExamSession";
+import {CreateExamSessionDto} from "../../models/ExamSession";
 
 export const createExamSession = async (examId: string, data: CreateExamSessionDto) => {
     try {
@@ -18,7 +18,7 @@ export const createExamSession = async (examId: string, data: CreateExamSessionD
 export const getAllExamSessions = async (examId: string) => {
     if (!examId) {
         console.error('No examId provided for getAllExamSessions');
-        return; 
+        return;
     }
     try {
         const response = await axios.get(`/exam/${examId}/session`, {
