@@ -1,6 +1,24 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {CreateExamSessionDto} from "../models/ExamSession";
-import {createExamSession, getAllExamSessions} from "../services/api/ExamSessionService";
+import {NewExamSessionDto} from "../models/ExamSession";
+import {createExamSession, getAllExamSessions, getExamSessionDetails} from "../services/api/ExamSessionService";
+
+export function useGetAllExamSessions(examId: string) {
+    return useQuery(
+        ["getAllExamSessions", examId],
+        () => getAllExamSessions(examId),
+        {enabled: !!examId} // Only fetch when examId is truthy
+    );
+}
+
+export function useGetExamSessionDetails(sessionId: string | undefined) {
+    const query =  useQuery(["getExamSessionDetails", sessionId], () => getExamSessionDetails(sessionId));
+
+    return {
+        examSession: query.data,
+        errorGettingExamSessionDetails: query.error,
+        statusGettingExamSessionDetails: query.status,
+    };
+}
 
 export function useCreateExamSession(invalidateQueryKey = "createExamSessions") {
     const queryClient = useQueryClient();
@@ -13,7 +31,7 @@ export function useCreateExamSession(invalidateQueryKey = "createExamSessions") 
         isSuccess: isSuccessCreatingExamSession,
     } = useMutation(({examId, data}: {
         examId: string,
-        data: CreateExamSessionDto
+        data: NewExamSessionDto
     }) => createExamSession(examId, data), {
         onSuccess: () => {
             queryClient.invalidateQueries([invalidateQueryKey]);
@@ -30,12 +48,4 @@ export function useCreateExamSession(invalidateQueryKey = "createExamSessions") 
         errorCreatingExamSession,
         isSuccessCreatingExamSession,
     };
-}
-
-export function useGetAllExamSessions(examId: string) {
-    return useQuery(
-        ["getAllExamSessions", examId],
-        () => getAllExamSessions(examId),
-        {enabled: !!examId} // Only fetch when examId is truthy
-    );
 }

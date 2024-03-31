@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import dayjs, {Dayjs} from 'dayjs';
 import {Box, Button, Container, TextField, Typography} from '@mui/material';
-import {useExam} from '../../hooks/useExam';
+import {useCreateExam} from '../../hooks/useExam';
 import {NewExamDto} from '../../models/Exam';
 import {useNavigate} from 'react-router-dom';
 import {DatePicker, TimePicker} from "@mui/x-date-pickers";
@@ -15,7 +15,7 @@ function CreateExam() {
     const [date, setDate] = useState<Dayjs | null>(dayjs());
     const [start, setStart] = useState<Dayjs | null>(dayjs());
     const [end, setEnd] = useState<Dayjs | null>(dayjs());
-    const {mutateCreateExam, isErrorCreatingExam, errorCreatingExam} = useExam("createExam");
+    const {mutateCreateExam, isErrorCreatingExam, errorCreatingExam} = useCreateExam("createExam");
     const [error, setError] = useState<RestError>();
     const navigate = useNavigate();
 

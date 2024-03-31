@@ -1,11 +1,12 @@
 import axios from "axios";
 import {StudentParticipation} from "../../models/StudentParticipation";
 
-export async function getStudentParticipations(examId: string | undefined, sessionId: string | undefined) {
-    if (!examId || !sessionId || isNaN(parseInt(sessionId))) {
-        throw new Error('Invalid examId or sessionId');
+export async function getStudentParticipations(sessionId: string | undefined) {
+    if (!sessionId || isNaN(+sessionId)) {
+        console.error('Invalid sessionId');
+        throw new Error('Invalid sessionId');
     }
-    const url = `/exam/${examId}/session/${sessionId}/participation`;
+    const url = `/exam-sessions/${sessionId}/participations`;
     try {
         const response = await axios.get<StudentParticipation[]>(url);
         return response.data;

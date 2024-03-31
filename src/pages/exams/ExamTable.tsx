@@ -7,18 +7,17 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import {Exam} from '../../models/Exam';
 import {useDeleteExam} from '../../hooks/useExam';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {TableCell} from "@mui/material";
 import {prettyDate, shortTime} from "../../utils/date";
 import {useNavigate} from "react-router-dom";
+import {Description, Edit, Delete} from "@mui/icons-material";
 
 interface ExamTableProps {
     exams: Exam[] | undefined;
     queryStatus: "idle" | "error" | "loading" | "success";
 }
 
-export default function ExamTable({exams, queryStatus}: ExamTableProps) {
+function ExamTable({exams, queryStatus}: ExamTableProps) {
     const {mutateDeleteExam} = useDeleteExam();
     const navigate = useNavigate();
 
@@ -27,7 +26,10 @@ export default function ExamTable({exams, queryStatus}: ExamTableProps) {
     };
     const handleEditExam = (exam: Exam) => {
         navigate(`/exams/${exam.id}/edit`);
-    }
+    };
+    const handleShowExam = (exam: Exam) => {
+        navigate(`/exams/${exam.id}`);
+    };
 
     let tableContent;
     if (queryStatus === 'loading') {
@@ -38,18 +40,21 @@ export default function ExamTable({exams, queryStatus}: ExamTableProps) {
         tableContent = <TableRow><TableCell colSpan={6}>No exams in sight</TableCell></TableRow>;
     } else {
         tableContent = exams.map((exam) => (
-            <TableRow key={exam.id}>
+            <TableRow key={exam.id} onClick={() => handleShowExam(exam)}>
                 <TableCell component="th" scope="row">{exam.id}</TableCell>
                 <TableCell align="left">{exam.name}</TableCell>
                 <TableCell align="left">{prettyDate(exam.startTime)}</TableCell>
                 <TableCell align="left">{shortTime(exam.startTime)}</TableCell>
                 <TableCell align="left">{shortTime(exam.endTime)}</TableCell>
-                <TableCell align="right">
+                <TableCell align="left">
+                    <IconButton onClick={() => handleShowExam(exam)}>
+                        <Description/>
+                    </IconButton>
                     <IconButton onClick={() => handleEditExam(exam)}>
-                        <ModeEditIcon/>
+                        <Edit/>
                     </IconButton>
                     <IconButton onClick={() => handleDeleteExam(exam)}>
-                        <DeleteIcon/>
+                        <Delete/>
                     </IconButton>
                 </TableCell>
             </TableRow>
@@ -66,7 +71,7 @@ export default function ExamTable({exams, queryStatus}: ExamTableProps) {
                         <TableCell align="left">Date</TableCell>
                         <TableCell align="left">Start</TableCell>
                         <TableCell align="left">End</TableCell>
-                        <TableCell align="right"></TableCell>
+                        <TableCell align="left">Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -76,3 +81,5 @@ export default function ExamTable({exams, queryStatus}: ExamTableProps) {
         </TableContainer>
     );
 }
+
+export default ExamTable;

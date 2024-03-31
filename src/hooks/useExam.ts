@@ -1,10 +1,29 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {createExam, deleteExam, getExams, updateExam} from "../services/api/ExamService";
+import {createExam, deleteExam, getExams, getExamDetails, updateExam} from "../services/api/ExamService";
 import {ExamDto, NewExamDto} from "../models/Exam";
-import {getExamDetails} from "../services/api/ExamInfoService";
 
 
-export function useExam(invalidateQueryKey = "createExam") {
+export function useGetExams() {
+    const query = useQuery(["getExams"], () => getExams());
+
+    return {
+        exams: query.data,
+        errorGettingExams: query.error,
+        statusGettingExams: query.status
+    }
+}
+
+export function useGetExamDetails(examId: string | undefined) {
+    const query = useQuery(["getExamDetails", examId], () => getExamDetails(examId));
+
+    return {
+        exam: query.data,
+        errorGettingExamDetails: query.error,
+        statusGettingExamDetails: query.status
+    };
+}
+
+export function useCreateExam(invalidateQueryKey = "createExam") {
     const queryClient = useQueryClient();
 
     const {
@@ -26,16 +45,6 @@ export function useExam(invalidateQueryKey = "createExam") {
         errorCreatingExam,
         isSuccessCreatingExam,
     };
-}
-
-export function useGetExams() {
-    const query = useQuery(["getExams"], () => getExams());
-
-    return {
-        exams: query.data,
-        errorGettingExams: query.error,
-        statusGettingExams: query.status
-    }
 }
 
 
@@ -93,29 +102,3 @@ export function useDeleteExam() {
         isSuccessDeletingExam,
     };
 }
-
-export function useExamInfo(examId: string, sessionId: string | undefined) {
-    const queryClient = useQueryClient();
-
-    const query = useQuery(["getExamDetails", examId, sessionId], () => getExamDetails(examId, sessionId), {
-        enabled: !!examId,
-        onSuccess: async () => {
-            await queryClient.invalidateQueries(['getExamDetails']);
-        },
-        onError: (error) => {
-            console.error('Error fetching exam details:', error);
-        },
-    });
-
-    return {
-        data: query.data,
-        isLoading: query.isLoading,
-        isError: query.isError,
-        error: query.error,
-        isSuccess: query.isSuccess,
-    };
-}
-
-
-
-

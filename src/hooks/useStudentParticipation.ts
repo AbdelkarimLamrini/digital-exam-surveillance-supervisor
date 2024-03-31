@@ -1,13 +1,12 @@
 import {useQuery} from "react-query";
 import {getStudentParticipations} from "../services/api/StudentParticipationService";
 
-export function useGetStudentParticipations(examId: string | undefined, sessionId: string | undefined) {
-    const query = useQuery(["getStudentParticipations", examId, sessionId], () => getStudentParticipations(examId, sessionId));
+export function useGetStudentParticipations(sessionId: string | undefined) {
+    const query = useQuery(["getStudentParticipations", sessionId], () => getStudentParticipations(sessionId));
 
     return {
-        data: query.data,
-        isLoadingGettingStudents: query.isLoading,
-        isErrorGettingStudents: query.isError,
-        isSuccessGettingStudents: query.isSuccess,
+        studentParticipations: query.data,
+        statusGettingStudentParticipations: query.status,
+        errorGettingStudentParticipations: query.error,
     }
 }

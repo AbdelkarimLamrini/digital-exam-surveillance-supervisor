@@ -21,7 +21,7 @@ function VideoPlayer({playerRef, focusedStudent, onError}: VideoPlayerProps) {
             pip={false}
             playing={true}
             muted={true}
-            controls={false}
+            controls={true}
             width="100%"
             height="100%"
             config={{

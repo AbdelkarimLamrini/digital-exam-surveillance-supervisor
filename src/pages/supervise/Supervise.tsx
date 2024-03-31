@@ -17,7 +17,6 @@ import {
     Typography,
 } from "@mui/material";
 import {Cached, RadioButtonChecked} from "@mui/icons-material";
-import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 
 import {useGetStudentParticipations} from "../../hooks/useStudentParticipation";
 import {useParams} from "react-router-dom";
@@ -29,7 +28,7 @@ import VideoPlayer from "./VideoPlayer";
 import moment from "moment";
 import MovieIcon from "@mui/icons-material/Movie";
 import Link from "@mui/material/Link";
-import {useExamInfo} from "../../hooks/useExam";
+import {useGetExamSessionDetails} from "../../hooks/useExamSession";
 
 interface RecordingDetails {
     id: number;
@@ -55,13 +54,8 @@ interface FraudDetection {
 }
 
 function Supervise() {
-    const {examId, sessionId} = useParams();
-    const {
-        data,
-        isLoadingGettingStudents,
-        isErrorGettingStudents,
-        isSuccessGettingStudents,
-    } = useGetStudentParticipations(examId, sessionId);
+    const {sessionId} = useParams();
+    const {studentParticipations, statusGettingStudentParticipations} = useGetStudentParticipations(sessionId);
     const {startRecordingMutate, isLoadingStartingRecording} =
         useStartRecording();
     const [focusedStudent, setFocusedStudent] = useState<StudentParticipation>();
@@ -74,12 +68,8 @@ function Supervise() {
     const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
     const [manualMode, setManualMode] = useState(false);
     const {stopRecordingMutate} = useStopRecording();
-    const [isRecording, setIsRecording] = useState(false);
     const [recordings, setRecordings] = useState<RecordingDetails[]>([]);
-    const {data: examInfo, isLoading: isLoadingExamInfo} = useExamInfo(
-        examId || "",
-        sessionId || ""
-    );
+    const {examSession, statusGettingExamSessionDetails} = useGetExamSessionDetails(sessionId);
 
     const formatDate = (dateStr: string) => {
         if (!dateStr) {
@@ -317,18 +307,16 @@ function Supervise() {
         return () => clearInterval(intervalId);
     }, [intervalMs]);
 
-    if (isLoadingGettingStudents || !data) {
+    if (statusGettingStudentParticipations === 'loading' || !studentParticipations) {
         if (!refresh) setRefresh(true);
         return <Typography>Loading...</Typography>;
-    }
-    if (isErrorGettingStudents) {
+    } else if (statusGettingStudentParticipations === 'error') {
         if (!refresh) setRefresh(true);
         return <Typography>Error loading students</Typography>;
-    }
-    if (isSuccessGettingStudents && refresh) {
+    } else if (statusGettingStudentParticipations === 'success' && refresh) {
         if (refresh) setRefresh(false);
-        setStudents(data);
-        if (data.length > 0) setFocusedStudent(data[0]);
+        setStudents(studentParticipations);
+        if (studentParticipations.length > 0) setFocusedStudent(studentParticipations[0]);
     }
 
     return (
@@ -350,7 +338,7 @@ function Supervise() {
             )}
             <Container maxWidth={"xl"}>
                 <Grid container spacing={2}>
-                    <Grid item xs={9}>
+                    <Grid item xs={10}>
                         <Box
                             sx={{
                                 display: "flex",
@@ -360,21 +348,17 @@ function Supervise() {
                             }}
                         >
                             <Typography variant="h5">
-                                {isLoadingExamInfo
+                                {statusGettingExamSessionDetails === "loading"
                                     ? "Loading exam info..."
-                                    : examInfo
-                                        ? `${examInfo.examName} - ${examInfo.classRoomId}`
+                                    : examSession
+                                        ? `${examSession.examName} - ${examSession.classRoomId}`
                                         : "Exam Info Not Found"}
                             </Typography>
 
                             <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-                                    <AirplanemodeActiveIcon
-                                        style={{
-                                            color: manualMode ? "#9E9E9E" : "#000000",
-                                        }}
-                                        onClick={handleToggleButtonGroupClick}
-                                    />
+                                <Box sx={{display: "flex", alignItems: "center", gap: 1}}
+                                     onClick={handleToggleButtonGroupClick}
+                                >
                                     <Typography variant="body1">
                                         {manualMode ? "Manual mode" : "Carousel mode"}
                                     </Typography>
