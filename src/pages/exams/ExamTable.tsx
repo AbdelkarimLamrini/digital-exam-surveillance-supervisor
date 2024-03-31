@@ -10,7 +10,7 @@ import {useDeleteExam} from '../../hooks/useExam';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {TableCell} from "@mui/material";
-import {prettyDate, shortTime} from "../../utils/formatting";
+import {prettyDate, shortTime} from "../../utils/date";
 import {useNavigate} from "react-router-dom";
 
 interface ExamTableProps {

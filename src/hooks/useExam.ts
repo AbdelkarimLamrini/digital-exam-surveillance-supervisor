@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {createExam, deleteExam, getExams, updateExam} from "../services/api/ExamService";
-import {NewExamDto, ExamDto} from "../models/Exam";
+import {ExamDto, NewExamDto} from "../models/Exam";
 import {getExamDetails} from "../services/api/ExamInfoService";
 
 
@@ -8,22 +8,19 @@ export function useExam(invalidateQueryKey = "createExam") {
     const queryClient = useQueryClient();
 
     const {
-        mutate,
+        mutate: mutateCreateExam,
         isLoading: isLoadingCreatingExam,
         isError: isErrorCreatingExam,
-        error: errorCreatingExam,
         isSuccess: isSuccessCreatingExam,
+        error: errorCreatingExam,
     } = useMutation((data: NewExamDto) => createExam(data), {
-        onSuccess: () => {
-            queryClient.invalidateQueries([invalidateQueryKey]);
-        },
-        onError: (error) => {
-            console.error('Error creating exam:', error);
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([invalidateQueryKey]);
         },
     });
 
     return {
-        mutateCreateExam: mutate,
+        mutateCreateExam,
         isLoadingCreatingExam,
         isErrorCreatingExam,
         errorCreatingExam,
@@ -53,8 +50,8 @@ export function useUpdateExam(invalidateQueryKey = "updateExam") {
         isSuccess: isSuccessUpdatingExam,
     } = useMutation(
         ({id, data}: { id: string; data: ExamDto }) => updateExam(id, data), {
-            onSuccess: () => {
-                queryClient.invalidateQueries([invalidateQueryKey]);
+            onSuccess: async () => {
+                await queryClient.invalidateQueries([invalidateQueryKey]);
             },
             onError: (error) => {
                 console.error('Error creating exam:', error);
@@ -80,8 +77,8 @@ export function useDeleteExam() {
         error: errorDeletingExam,
         isSuccess: isSuccessDeletingExam,
     } = useMutation((id: string) => deleteExam(id), {
-        onSuccess: () => {
-            queryClient.invalidateQueries(['getExams']);
+        onSuccess: async () => {
+            await queryClient.invalidateQueries(['getExams']);
         },
         onError: (error) => {
             console.error('Error deleting exam:', error);
@@ -102,9 +99,8 @@ export function useExamInfo(examId: string, sessionId: string | undefined) {
 
     const query = useQuery(["getExamDetails", examId, sessionId], () => getExamDetails(examId, sessionId), {
         enabled: !!examId,
-        onSuccess: () => {
-
-            queryClient.invalidateQueries(['getExamDetails']);
+        onSuccess: async () => {
+            await queryClient.invalidateQueries(['getExamDetails']);
         },
         onError: (error) => {
             console.error('Error fetching exam details:', error);
