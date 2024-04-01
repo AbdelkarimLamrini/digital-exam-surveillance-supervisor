@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    Box,
-    Button,
-    Container,
-    Grid,
-    Typography
-} from "@mui/material";
+import {Box, Button, Container, Grid, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetExamDetails} from "../../hooks/useExam";
 import {longNumericDateTime, longPrettyDate, shortTime} from "../../utils/date";
@@ -28,10 +22,10 @@ function ExamDetail() {
     return (
         <Container>
             <Typography variant="h3" component="h1">Exam details</Typography>
-            <Grid container spacing={2} sx={{my:4}}>
+            <Grid container spacing={2} sx={{my: 4}}>
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="h2">Exam info</Typography>
-                    <Box sx={{display: 'flex', gap: '3em', my:2}}>
+                    <Box sx={{display: 'flex', gap: '3em', my: 2}}>
                         <Box>
                             <Typography>Name</Typography>
                             <Typography>ID</Typography>
@@ -44,7 +38,7 @@ function ExamDetail() {
                         <Box>
                             <Typography>{exam.name}</Typography>
                             <Typography>{exam.id}</Typography>
-                            <Typography>{exam.creatorName}</Typography>
+                            <Typography>{exam.creatorName.length ? exam.creatorName : '/'}</Typography>
                             <Typography>{longNumericDateTime(exam.creationTime)}</Typography>
                             <Typography>{longPrettyDate(exam.startTime)}</Typography>
                             <Typography>{shortTime(exam.startTime)} - {shortTime(exam.endTime)}</Typography>

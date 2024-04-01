@@ -1,21 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import dayjs, {Dayjs} from 'dayjs';
-import {Box, Button, Container, TextField, Typography} from '@mui/material';
+import {Box, Container, Typography} from '@mui/material';
 import {useCreateExam} from '../../hooks/useExam';
 import {NewExamDto} from '../../models/Exam';
 import {useNavigate} from 'react-router-dom';
-import {DatePicker, TimePicker} from "@mui/x-date-pickers";
-import {combineDateAndTimeISO} from "../../utils/date";
 import {RestError} from "../../models/RestError";
+import ExamForm, {ExamFormState} from "../../components/ExamForm";
+import dayjs from "dayjs";
+
+const initialFormState: ExamFormState = {
+    id: '',
+    name: '',
+    creatorName: '',
+    date: dayjs(),
+    start: dayjs(),
+    end: dayjs(),
+};
 
 function ExamCreate() {
-    const [id, setId] = useState('');
-    const [name, setName] = useState('');
-    const [creatorName, setCreatorName] = useState('');
-    const [date, setDate] = useState<Dayjs | null>(dayjs());
-    const [start, setStart] = useState<Dayjs | null>(dayjs());
-    const [end, setEnd] = useState<Dayjs | null>(dayjs());
     const {mutateCreateExam, isErrorCreatingExam, errorCreatingExam} = useCreateExam("createExam");
+    const [examFormState] = useState<ExamFormState>(initialFormState);
     const [error, setError] = useState<RestError>();
     const navigate = useNavigate();
 
@@ -27,18 +30,7 @@ function ExamCreate() {
         }
     }, [isErrorCreatingExam, errorCreatingExam]);
 
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        if (!date || !start || !end) return;
-
-        const newExamDto: NewExamDto = {
-            id: id,
-            name: name,
-            creatorName: creatorName,
-            startTime: combineDateAndTimeISO(date, start),
-            endTime: combineDateAndTimeISO(date, end),
-        };
-
+    const createExam = (newExamDto: NewExamDto) => {
         mutateCreateExam(newExamDto, {
             onSuccess: () => {
                 navigate('/exams');
@@ -52,71 +44,7 @@ function ExamCreate() {
                 Create a new exam
             </Typography>
             <Box sx={{my: 4}} maxWidth="sm">
-                <form onSubmit={handleSubmit}>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '1em',
-                    }}>
-                        <TextField
-                            fullWidth
-                            label="Exam ID"
-                            value={id}
-                            error={error?.fieldErrors?.id !== undefined}
-                            helperText={error?.fieldErrors?.id}
-                            onChange={(e) => setId(e.target.value)}
-                        />
-                        <TextField
-                            fullWidth
-                            label="Exam Name"
-                            value={name}
-                            error={error?.fieldErrors?.name !== undefined}
-                            helperText={error?.fieldErrors?.name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                        <TextField
-                            fullWidth
-                            label="Creator Name"
-                            value={creatorName}
-                            error={error?.fieldErrors?.creatorName !== undefined}
-                            helperText={error?.fieldErrors?.creatorName}
-                            onChange={(e) => setCreatorName(e.target.value)}
-                        />
-                        <DatePicker
-                            label="Date"
-                            sx={{width: '100%'}}
-                            value={date}
-                            onChange={setDate}
-                        />
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            width: '100%',
-                            gap: '1em',
-                        }}>
-                            <TimePicker
-                                sx={{flexGrow: 1}}
-                                label="Start Time"
-                                value={start}
-                                onChange={setStart}
-                            />
-                            <TimePicker
-                                sx={{flexGrow: 1}}
-                                label="End Time"
-                                value={end}
-                                onChange={setEnd}
-                            />
-                        </Box>
-
-                        <Typography color="error">
-                            {error?.message}
-                        </Typography>
-
-                        <Button type="submit" variant="contained" color="primary">
-                            Submit
-                        </Button>
-                    </Box>
-                </form>
+                <ExamForm examFormState={examFormState} handleSubmit={createExam} error={error}/>
             </Box>
         </Container>
     );

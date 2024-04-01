@@ -1,35 +1,40 @@
 import React, {useEffect, useState} from 'react';
-import dayjs, {Dayjs} from 'dayjs';
-import {Box, Button, Container, Grid, TextField, Typography} from '@mui/material';
+import dayjs  from 'dayjs';
+import {Button, Container, Grid, Typography} from '@mui/material';
 import {useGetExamDetails, useUpdateExam} from '../../hooks/useExam';
 import {NewExamDto} from '../../models/Exam';
 import {useNavigate, useParams} from 'react-router-dom';
-import {DatePicker, TimePicker} from "@mui/x-date-pickers";
-import {combineDateAndTimeISO} from "../../utils/date";
 import {RestError} from "../../models/RestError";
 import ExamSessionTable from "./ExamSessionTable";
+import ExamForm, {ExamFormState} from "../../components/ExamForm";
+
+const initialFormState: ExamFormState = {
+    id: '',
+    name: '',
+    creatorName: '',
+    date: dayjs(),
+    start: dayjs(),
+    end: dayjs(),
+};
 
 function CreateExam() {
     const {examId} = useParams();
     const {exam, statusGettingExamDetails} = useGetExamDetails(examId);
     const {mutateUpdateExam, errorUpdatingExam, isErrorUpdatingExam} = useUpdateExam();
-    const [id, setId] = useState('');
-    const [name, setName] = useState('');
-    const [creatorName, setCreatorName] = useState('');
-    const [date, setDate] = useState<Dayjs | null>(dayjs());
-    const [start, setStart] = useState<Dayjs | null>(dayjs());
-    const [end, setEnd] = useState<Dayjs | null>(dayjs());
+    const [examFormState, setExamFormState] = useState<ExamFormState>(initialFormState);
     const [error, setError] = useState<RestError>();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (statusGettingExamDetails === 'success' && exam) {
-            setId(exam.id);
-            setName(exam.name);
-            setCreatorName(exam.creatorName);
-            setDate(dayjs(exam.startTime));
-            setStart(dayjs(exam.startTime));
-            setEnd(dayjs(exam.endTime));
+            setExamFormState({
+                id: exam.id,
+                name: exam.name,
+                creatorName: exam.creatorName,
+                date: dayjs(exam.startTime),
+                start: dayjs(exam.startTime),
+                end: dayjs(exam.endTime),
+            });
         }
     }, [statusGettingExamDetails, exam]);
 
@@ -40,18 +45,7 @@ function CreateExam() {
         }
     }, [isErrorUpdatingExam, errorUpdatingExam]);
 
-    const handleEditExam = (event: any) => {
-        event.preventDefault();
-        if (!date || !start || !end) return;
-
-        const newExamDto: NewExamDto = {
-            id: id,
-            name: name,
-            creatorName: creatorName,
-            startTime: combineDateAndTimeISO(date, start),
-            endTime: combineDateAndTimeISO(date, end),
-        };
-
+    const editExam = (newExamDto: NewExamDto) => {
         mutateUpdateExam({id: examId, data: newExamDto}, {
             onSuccess: () => {
                 navigate(`/exams/${examId}`);
@@ -72,80 +66,14 @@ function CreateExam() {
     return (
         <Container>
             <Typography variant="h3" component="h1">Edit exam</Typography>
+            <Button onClick={() => navigate(`/exams/${examId}`)}
+                    variant="outlined" color="primary">
+                Details
+            </Button>
             <Grid container spacing={2} sx={{my: 4}}>
                 <Grid item xs={12} md={6}>
-                    <form onSubmit={handleEditExam}>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1em',
-                        }}>
-                            <Typography variant="h4" component="h2">Exam info</Typography>
-                            <TextField
-                                fullWidth
-                                label="Exam ID"
-                                value={id}
-                                error={error?.fieldErrors?.id !== undefined}
-                                helperText={error?.fieldErrors?.id}
-                                onChange={(e) => setId(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Exam Name"
-                                value={name}
-                                error={error?.fieldErrors?.name !== undefined}
-                                helperText={error?.fieldErrors?.name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Creator Name"
-                                value={creatorName}
-                                error={error?.fieldErrors?.creatorName !== undefined}
-                                helperText={error?.fieldErrors?.creatorName}
-                                onChange={(e) => setCreatorName(e.target.value)}
-                            />
-                            <DatePicker
-                                label="Date"
-                                sx={{width: '100%'}}
-                                value={date}
-                                onChange={setDate}
-                            />
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                width: '100%',
-                                gap: '1em',
-                            }}>
-                                <TimePicker
-                                    sx={{flexGrow: 1}}
-                                    label="Start Time"
-                                    value={start}
-                                    onChange={setStart}
-                                />
-                                <TimePicker
-                                    sx={{flexGrow: 1}}
-                                    label="End Time"
-                                    value={end}
-                                    onChange={setEnd}
-                                />
-                            </Box>
-
-                            <Typography color="error">
-                                {error?.message}
-                            </Typography>
-
-                            <Box sx={{display: 'flex', gap: '1em'}}>
-                                <Button onClick={() => navigate(`/exams/${examId}`)}
-                                        variant="outlined" color="primary">
-                                    Details
-                                </Button>
-                                <Button type="submit" variant="contained" color="primary">
-                                    Submit
-                                </Button>
-                            </Box>
-                        </Box>
-                    </form>
+                    <Typography variant="h4" component="h2" sx={{mb:'0.5em'}}>Exam info</Typography>
+                    <ExamForm examFormState={examFormState} handleSubmit={editExam} error={error}/>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="h2">Exam sessions</Typography>
