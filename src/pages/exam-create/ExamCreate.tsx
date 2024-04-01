@@ -8,7 +8,7 @@ import {DatePicker, TimePicker} from "@mui/x-date-pickers";
 import {combineDateAndTimeISO} from "../../utils/date";
 import {RestError} from "../../models/RestError";
 
-function CreateExam() {
+function ExamCreate() {
     const [id, setId] = useState('');
     const [name, setName] = useState('');
     const [creatorName, setCreatorName] = useState('');
@@ -122,4 +122,4 @@ function CreateExam() {
     );
 }
 
-export default CreateExam;
+export default ExamCreate;

@@ -5,7 +5,7 @@ import {
     getAllExamSessions,
     getExamSessionDetails,
     updateExamSession
-} from "../services/api/ExamSessionService";
+} from "../services/examSessionService";
 
 export function useGetAllExamSessions(examId: string) {
     const query = useQuery(["exams", examId, "sessions"], () => getAllExamSessions(examId));

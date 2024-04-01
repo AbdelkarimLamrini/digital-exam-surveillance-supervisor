@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {createExam, deleteExam, getExamDetails, getExams, updateExam} from "../services/api/ExamService";
+import {createExam, deleteExam, getExamDetails, getExams, updateExam} from "../services/examService";
 import {NewExamDto} from "../models/Exam";
 
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ExamSessionDetail, ExamSessionDetailDto, NewExamSessionDto} from "../../models/ExamSession";
+import {ExamSessionDetail, ExamSessionDetailDto, NewExamSessionDto} from "../models/ExamSession";
 
 export const getAllExamSessions = async (examId: string | undefined) => {
     if (!examId) {

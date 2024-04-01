@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Exams from './pages/exams/Exams';
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
-import CreateExam from './pages/exam-create/CreateExam';
+import ExamCreate from './pages/exam-create/ExamCreate';
 import axios from 'axios';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import Supervise from './pages/supervise/Supervise';
@@ -29,7 +29,7 @@ function App() {
                             <Route path="/exams" element={<Exams/>}/>
                             <Route path="/exams/:examId" element={<ExamDetail/>}/>
                             <Route path="/exams/:examId/edit" element={<ExamEdit/>}/>
-                            <Route path="/create-exam" element={<CreateExam/>}/>
+                            <Route path="/create-exam" element={<ExamCreate/>}/>
                             <Route path="/supervise/:sessionId" element={<Supervise/>}/>
                         </Routes>
                     </BrowserRouter>

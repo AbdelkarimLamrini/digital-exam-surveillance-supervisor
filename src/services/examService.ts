@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Exam, ExamDto, NewExamDto} from "../../models/Exam";
+import {Exam, ExamDto, NewExamDto} from "../models/Exam";
 
 
 export const getExams = async (): Promise<Exam[]> => {

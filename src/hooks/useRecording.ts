@@ -1,5 +1,5 @@
 import {useMutation, useQueryClient} from "react-query";
-import {startRecording, stopRecording} from "../services/api/RecordService";
+import {startRecording, stopRecording} from "../services/recordService";
 
 export function useStartRecording(invalidateQueryKey = "recordings") {
     const queryClient = useQueryClient();

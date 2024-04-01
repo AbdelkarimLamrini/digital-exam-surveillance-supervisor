@@ -1,5 +1,5 @@
 import axios from "axios";
-import {StudentParticipation} from "../../models/StudentParticipation";
+import {StudentParticipation} from "../models/StudentParticipation";
 
 export async function getStudentParticipations(sessionId: string | undefined) {
     if (!sessionId || isNaN(+sessionId)) {
