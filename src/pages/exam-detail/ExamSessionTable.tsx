@@ -16,7 +16,7 @@ interface ExamSessionTableProps {
 
 function ExamSessionTable({examSessions, handleSupervise}: ExamSessionTableProps) {
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{my: 2}}>
             <Table aria-label="Exam session table">
                 <TableHead>
                     <TableRow>
@@ -36,8 +36,9 @@ function ExamSessionTable({examSessions, handleSupervise}: ExamSessionTableProps
                                 <IconButton
                                     onClick={() => handleSupervise(session.id)}
                                     aria-label="supervise"
+                                    size="small"
                                 >
-                                    <Visibility/>
+                                    <Visibility fontSize="inherit"/>
                                 </IconButton>
                             </TableCell>
                         </TableRow>

@@ -1,17 +1,24 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {NewExamSessionDto} from "../models/ExamSession";
-import {createExamSession, getAllExamSessions, getExamSessionDetails} from "../services/api/ExamSessionService";
+import {
+    createExamSession, deleteExamSession,
+    getAllExamSessions,
+    getExamSessionDetails,
+    updateExamSession
+} from "../services/api/ExamSessionService";
 
 export function useGetAllExamSessions(examId: string) {
-    return useQuery(
-        ["getAllExamSessions", examId],
-        () => getAllExamSessions(examId),
-        {enabled: !!examId} // Only fetch when examId is truthy
-    );
+    const query = useQuery(["exams", examId, "sessions"], () => getAllExamSessions(examId));
+
+    return {
+        examSessions: query.data,
+        errorGettingExamSessions: query.error,
+        statusGettingExamSessions: query.status,
+    };
 }
 
 export function useGetExamSessionDetails(sessionId: string | undefined) {
-    const query =  useQuery(["getExamSessionDetails", sessionId], () => getExamSessionDetails(sessionId));
+    const query = useQuery(["exam-sessions", sessionId], () => getExamSessionDetails(sessionId));
 
     return {
         examSession: query.data,
@@ -20,32 +27,62 @@ export function useGetExamSessionDetails(sessionId: string | undefined) {
     };
 }
 
-export function useCreateExamSession(invalidateQueryKey = "createExamSessions") {
+export function useCreateExamSession(invalidateQueryKey = "exams") {
     const queryClient = useQueryClient();
 
     const {
-        mutate,
-        isLoading: isLoadingCreatingExamSession,
-        isError: isErrorCreatingExamSession,
+        mutate: mutateCreateExamSession,
         error: errorCreatingExamSession,
-        isSuccess: isSuccessCreatingExamSession,
-    } = useMutation(({examId, data}: {
-        examId: string,
-        data: NewExamSessionDto
-    }) => createExamSession(examId, data), {
-        onSuccess: () => {
-            queryClient.invalidateQueries([invalidateQueryKey]);
-        },
-        onError: (error) => {
-            console.error('Error creating exam:', error);
+        isError: isErrorCreatingExamSession,
+    } = useMutation(({examId, data}: { examId: string, data: NewExamSessionDto }) => createExamSession(examId, data), {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([invalidateQueryKey]);
         },
     });
 
     return {
-        mutateCreateExamSession: mutate,
-        isLoadingCreatingExamSession,
+        mutateCreateExamSession,
         isErrorCreatingExamSession,
         errorCreatingExamSession,
-        isSuccessCreatingExamSession,
+    };
+}
+
+export function useUpdateExamSession(invalidateQueryKey = "exams") {
+    const queryClient = useQueryClient();
+
+    const {
+        mutate: mutateUpdateExamSession,
+        error: errorUpdatingExamSession,
+        isError: isErrorUpdatingExamSession,
+    } = useMutation(({sessionId, data}: { sessionId: number, data: NewExamSessionDto }) => updateExamSession(sessionId, data), {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([invalidateQueryKey]);
+        },
+    });
+
+    return {
+        mutateUpdateExamSession,
+        isErrorUpdatingExamSession,
+        errorUpdatingExamSession,
+    };
+}
+
+export function useDeleteExamSession(invalidateQueryKey = "exams") {
+    const queryClient = useQueryClient();
+
+    const {
+        mutate: mutateDeleteExamSession,
+        error: errorDeletingExamSession,
+        isError: isErrorDeletingExamSession,
+    } = useMutation((sessionId: number) => deleteExamSession(sessionId), {
+        onSuccess: async () => {
+            await queryClient.invalidateQueries([invalidateQueryKey]);
+        },
+    });
+
+    return {
+        mutateDeleteExamSession,
+        isErrorDeletingExamSession,
+        errorDeletingExamSession,
     };
 }

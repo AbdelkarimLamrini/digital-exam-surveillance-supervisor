@@ -8,9 +8,9 @@ import IconButton from '@mui/material/IconButton';
 import {Exam} from '../../models/Exam';
 import {useDeleteExam} from '../../hooks/useExam';
 import {TableCell} from "@mui/material";
-import {prettyDate, shortTime} from "../../utils/date";
+import {shortPrettyDate, shortTime} from "../../utils/date";
 import {useNavigate} from "react-router-dom";
-import {Description, Edit, Delete} from "@mui/icons-material";
+import {Delete, Description, Edit} from "@mui/icons-material";
 
 interface ExamTableProps {
     exams: Exam[] | undefined;
@@ -40,10 +40,10 @@ function ExamTable({exams, queryStatus}: ExamTableProps) {
         tableContent = <TableRow><TableCell colSpan={6}>No exams in sight</TableCell></TableRow>;
     } else {
         tableContent = exams.map((exam) => (
-            <TableRow key={exam.id} onClick={() => handleShowExam(exam)}>
+            <TableRow key={exam.id}>
                 <TableCell component="th" scope="row">{exam.id}</TableCell>
                 <TableCell align="left">{exam.name}</TableCell>
-                <TableCell align="left">{prettyDate(exam.startTime)}</TableCell>
+                <TableCell align="left">{shortPrettyDate(exam.startTime)}</TableCell>
                 <TableCell align="left">{shortTime(exam.startTime)}</TableCell>
                 <TableCell align="left">{shortTime(exam.endTime)}</TableCell>
                 <TableCell align="left">

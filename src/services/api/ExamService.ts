@@ -2,7 +2,6 @@ import axios from "axios";
 import {Exam, ExamDto, NewExamDto} from "../../models/Exam";
 
 
-
 export const getExams = async (): Promise<Exam[]> => {
     try {
         const response = await axios.get<ExamDto[]>('/exams');
@@ -31,9 +30,7 @@ export const getExamDetails = async (examId: string | undefined): Promise<Exam> 
 export const createExam = async (data: NewExamDto) => {
     try {
         const response = await axios.post('/exams', data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: {'Content-Type': 'application/json'}
         });
         return response.data;
     } catch (error) {
@@ -42,12 +39,14 @@ export const createExam = async (data: NewExamDto) => {
     }
 }
 
-export const updateExam = async (id: string, data: ExamDto) => {
+export const updateExam = async (id: string | undefined, data: NewExamDto) => {
+    if (!id) {
+        console.error('No examId provided for updateExam');
+        throw new Error('No examId provided for updateExam');
+    }
     try {
         const response = await axios.put(`/exams/${id}`, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: {'Content-Type': 'application/json'}
         });
         return response.data;
     } catch (error) {
