@@ -27,7 +27,7 @@ export class Exam {
     startTime: Date;
     endTime: Date;
 
-    constructor({id, name, creatorName, examSessions,creationTime, startTime, endTime}: ExamDto) {
+    constructor({id, name, creatorName, examSessions, creationTime, startTime, endTime}: ExamDto) {
         this.id = id;
         this.name = name;
         this.creatorName = creatorName;

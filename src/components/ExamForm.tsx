@@ -21,7 +21,7 @@ export interface ExamFormState {
     end: Dayjs | null;
 }
 
-function ExamForm({examFormState,handleSubmit, error}: ExamFormProps){
+function ExamForm({examFormState, handleSubmit, error}: ExamFormProps) {
     const [id, setId] = useState(examFormState.id);
     const [name, setName] = useState(examFormState.name);
     const [creatorName, setCreatorName] = useState(examFormState.creatorName);

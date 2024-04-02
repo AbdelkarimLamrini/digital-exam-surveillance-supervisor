@@ -1,7 +1,8 @@
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {NewExamSessionDto} from "../models/ExamSession";
 import {
-    createExamSession, deleteExamSession,
+    createExamSession,
+    deleteExamSession,
     getAllExamSessions,
     getExamSessionDetails,
     updateExamSession
@@ -54,7 +55,10 @@ export function useUpdateExamSession(invalidateQueryKey = "exams") {
         mutate: mutateUpdateExamSession,
         error: errorUpdatingExamSession,
         isError: isErrorUpdatingExamSession,
-    } = useMutation(({sessionId, data}: { sessionId: number, data: NewExamSessionDto }) => updateExamSession(sessionId, data), {
+    } = useMutation(({sessionId, data}: {
+        sessionId: number,
+        data: NewExamSessionDto
+    }) => updateExamSession(sessionId, data), {
         onSuccess: async () => {
             await queryClient.invalidateQueries([invalidateQueryKey]);
         },

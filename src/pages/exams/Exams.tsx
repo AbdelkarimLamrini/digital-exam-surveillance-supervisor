@@ -26,10 +26,10 @@ function Exams() {
                     There was an error loading the exams
                 </Alert>
             }
-            <Typography variant="h2" component="h1" sx={{mb:2}}>
+            <Typography variant="h2" component="h1" sx={{mb: 2}}>
                 Exams
             </Typography>
-            <Button variant="contained" sx={{mb:1}} onClick={createExam}>Create Exam</Button>
+            <Button variant="contained" sx={{mb: 1}} onClick={createExam}>Create Exam</Button>
             <ExamTable exams={exams} queryStatus={statusGettingExams}/>
         </Container>
     );
