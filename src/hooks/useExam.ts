@@ -23,7 +23,7 @@ export function useGetExamDetails(examId: string | undefined) {
     };
 }
 
-export function useCreateExam(invalidateQueryKey = "exams") {
+export function useCreateExam(invalidateQueryKey = ["exams"]) {
     const queryClient = useQueryClient();
 
     const {
@@ -44,18 +44,14 @@ export function useCreateExam(invalidateQueryKey = "exams") {
 }
 
 
-export function useUpdateExam(invalidateQueryKey = "exams") {
-    const queryClient = useQueryClient();
-
+export function useUpdateExam() {
     const {
         mutate: mutateUpdateExam,
         error: errorUpdatingExam,
         isError: isErrorUpdatingExam,
     } = useMutation(
-        ({id, data}: { id: string | undefined; data: NewExamDto }) => updateExam(id, data), {
-            onSuccess: async () => {
-                await queryClient.invalidateQueries([invalidateQueryKey]);
-            },
+        ({id, data}: { id: string | undefined; data: NewExamDto }) => {
+            return updateExam(id, data)
         });
 
     return {

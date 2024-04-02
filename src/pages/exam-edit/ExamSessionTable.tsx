@@ -3,30 +3,30 @@ import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import {Box, IconButton, TableCell, Toolbar, Typography} from "@mui/material";
+import {Box, IconButton, TableCell, Toolbar} from "@mui/material";
 import TableBody from "@mui/material/TableBody";
 import {Add, Delete, Edit} from "@mui/icons-material";
 import React, {useEffect, useState} from "react";
-import {ExamSession} from "../../models/ExamSession";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import TextField from "@mui/material/TextField";
-import DialogActions from "@mui/material/DialogActions";
+import {ExamSession, NewExamSessionDto} from "../../models/ExamSession";
 import Button from "@mui/material/Button";
 import {useCreateExamSession, useDeleteExamSession, useUpdateExamSession} from "../../hooks/useExamSession";
 import {RestError} from "../../models/RestError";
+import ExamSessionFormDialog, {ExamSessionFormState} from "./ExamSessionFormDialog";
 
 interface ExamSessionTableProps {
     examId: string;
     examSessions: ExamSession[];
 }
 
+const initialFormState: ExamSessionFormState = {
+    classRoomId: '',
+    supervisorName: ''
+};
+
 function ExamSessionTable({examId, examSessions}: ExamSessionTableProps) {
     const [sessionFormDialogOpen, setSessionFormDialogOpen] = useState(false);
     const [sessionEditId, setSessionEditId] = useState<number>();
-    const [classRoomId, setClassRoomId] = useState('');
-    const [supervisorName, setSupervisorName] = useState('');
+    const [examSessionFormState, setExamSessionFormState] = useState(initialFormState);
     const [error, setError] = useState<RestError>();
     const {mutateCreateExamSession, errorCreatingExamSession, isErrorCreatingExamSession} = useCreateExamSession();
     const {mutateUpdateExamSession, errorUpdatingExamSession, isErrorUpdatingExamSession} = useUpdateExamSession();
@@ -64,33 +64,29 @@ function ExamSessionTable({examId, examSessions}: ExamSessionTableProps) {
 
     const handleOpenSessionAddDialog = () => {
         setSessionFormDialogOpen(true);
-        setClassRoomId('');
-        setSupervisorName('');
+        setExamSessionFormState(initialFormState);
     }
     const handleOpenSessionEditDialog = (session: ExamSession) => {
         setSessionFormDialogOpen(true);
         setSessionEditId(session.id);
-        setClassRoomId(session.classRoomId);
-        setSupervisorName(session.supervisorName);
+        setExamSessionFormState({
+            classRoomId: session.classRoomId,
+            supervisorName: session.supervisorName
+        });
     }
     const handleCloseSessionFormDialog = () => {
         setSessionFormDialogOpen(false);
         setSessionEditId(undefined);
+        setExamSessionFormState(initialFormState);
     }
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
+    const handleSubmit = (newSessionDto: NewExamSessionDto) => {
         if (sessionEditId) {
-            mutateUpdateExamSession({sessionId: sessionEditId, data: {classRoomId, supervisorName}}, {
-                onSuccess: () => {
-                    setSessionFormDialogOpen(false);
-                    setSessionEditId(undefined);
-                }
+            mutateUpdateExamSession({sessionId: sessionEditId, data: newSessionDto}, {
+                onSuccess: () => handleCloseSessionFormDialog()
             });
         } else {
-            mutateCreateExamSession({examId: examId, data: {classRoomId, supervisorName}}, {
-                onSuccess: () => {
-                    setSessionFormDialogOpen(false);
-                }
+            mutateCreateExamSession({examId: examId, data: newSessionDto}, {
+                onSuccess: () => handleCloseSessionFormDialog()
             });
         }
     }
@@ -146,39 +142,14 @@ function ExamSessionTable({examId, examSessions}: ExamSessionTableProps) {
                     </Table>
                 </TableContainer>
             </Paper>
-            <Dialog
-                open={sessionFormDialogOpen}
-                onClose={() => handleCloseSessionFormDialog}
-            >
-                <DialogTitle>{sessionEditId ? 'Edit Exam Session' : 'Add Exam Session'}</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="ClassRoom ID"
-                        value={classRoomId}
-                        error={error?.fieldErrors?.classRoomId !== undefined}
-                        helperText={error?.fieldErrors?.classRoomId}
-                        onChange={(e) => setClassRoomId(e.target.value)}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label="Supervisor Name"
-                        value={supervisorName}
-                        error={error?.fieldErrors?.supervisorName !== undefined}
-                        helperText={error?.fieldErrors?.supervisorName}
-                        onChange={(e) => setSupervisorName(e.target.value)}
-                    />
-                    <Typography color="error">
-                        {error?.message}
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseSessionFormDialog}>Cancel</Button>
-                    <Button onClick={handleSubmit}>{sessionEditId ? 'Edit' : 'Add'}</Button>
-                </DialogActions>
-            </Dialog>
+            <ExamSessionFormDialog
+                dialogOpen={sessionFormDialogOpen}
+                editMode={sessionEditId !== undefined}
+                handleCloseDialog={handleCloseSessionFormDialog}
+                examSessionFormState={examSessionFormState}
+                handleSubmit={handleSubmit}
+                error={error}
+            />
         </Box>
     );
 }

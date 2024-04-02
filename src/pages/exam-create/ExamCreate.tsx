@@ -17,7 +17,7 @@ const initialFormState: ExamFormState = {
 };
 
 function ExamCreate() {
-    const {mutateCreateExam, isErrorCreatingExam, errorCreatingExam} = useCreateExam("createExam");
+    const {mutateCreateExam, isErrorCreatingExam, errorCreatingExam} = useCreateExam();
     const [examFormState] = useState<ExamFormState>(initialFormState);
     const [error, setError] = useState<RestError>();
     const navigate = useNavigate();

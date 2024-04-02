@@ -2,11 +2,12 @@ import React, {useEffect, useState} from 'react';
 import dayjs  from 'dayjs';
 import {Button, Container, Grid, Typography} from '@mui/material';
 import {useGetExamDetails, useUpdateExam} from '../../hooks/useExam';
-import {NewExamDto} from '../../models/Exam';
+import {ExamDto, NewExamDto} from '../../models/Exam';
 import {useNavigate, useParams} from 'react-router-dom';
 import {RestError} from "../../models/RestError";
 import ExamSessionTable from "./ExamSessionTable";
 import ExamForm, {ExamFormState} from "../../components/ExamForm";
+import {useQueryClient} from "react-query";
 
 const initialFormState: ExamFormState = {
     id: '',
@@ -18,6 +19,7 @@ const initialFormState: ExamFormState = {
 };
 
 function CreateExam() {
+    const queryClient = useQueryClient();
     const {examId} = useParams();
     const {exam, statusGettingExamDetails} = useGetExamDetails(examId);
     const {mutateUpdateExam, errorUpdatingExam, isErrorUpdatingExam} = useUpdateExam();
@@ -47,8 +49,12 @@ function CreateExam() {
 
     const editExam = (newExamDto: NewExamDto) => {
         mutateUpdateExam({id: examId, data: newExamDto}, {
-            onSuccess: () => {
-                navigate(`/exams/${examId}`);
+            onSuccess: async (examDto: ExamDto) => {
+                navigate(`/exams/${examDto.id}`);
+                if(examId !== examDto.id) {
+                    queryClient.removeQueries(['exams', examId]);
+                    await queryClient.invalidateQueries(['exams']);
+                }
             },
         });
     };

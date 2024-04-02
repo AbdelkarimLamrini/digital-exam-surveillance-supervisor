@@ -27,7 +27,7 @@ export const getExamDetails = async (examId: string | undefined): Promise<Exam> 
     }
 };
 
-export const createExam = async (data: NewExamDto) => {
+export const createExam = async (data: NewExamDto): Promise<ExamDto> => {
     try {
         const response = await axios.post('/exams', data, {
             headers: {'Content-Type': 'application/json'}
@@ -39,7 +39,7 @@ export const createExam = async (data: NewExamDto) => {
     }
 }
 
-export const updateExam = async (id: string | undefined, data: NewExamDto) => {
+export const updateExam = async (id: string | undefined, data: NewExamDto):Promise<ExamDto> => {
     if (!id) {
         console.error('No examId provided for updateExam');
         throw new Error('No examId provided for updateExam');
