@@ -1,5 +1,5 @@
 import axios from "axios";
-import {StudentParticipation, StudentParticipationDto} from "../models/StudentParticipationDto";
+import {StudentParticipationDto, StudentParticipation} from "../models/StudentParticipation";
 
 export async function getStudentParticipations(sessionId: string | undefined) {
     if (!sessionId) {
@@ -22,7 +22,7 @@ export async function getStudentParticipation(participationId: string | undefine
     }
     try {
         const response = await axios.get<StudentParticipationDto>(`/student-participations/${participationId}`);
-        return response.data;
+        return new StudentParticipation(response.data);
     } catch (error) {
         console.error('Error getting student participation', error);
         throw error;

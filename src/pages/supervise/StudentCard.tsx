@@ -7,7 +7,7 @@ import {
     SignalCellularOffRounded
 } from "@mui/icons-material";
 import React, {ReactElement} from "react";
-import {ConnectionStatus, StudentParticipation} from "../../models/StudentParticipationDto";
+import {ConnectionStatus, StudentParticipation} from "../../models/StudentParticipation";
 
 
 type ConnectionStatusColor = "success" | "error" | "warning";

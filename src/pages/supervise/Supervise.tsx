@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {StudentParticipation,} from "../../models/StudentParticipationDto";
+import {StudentParticipation,} from "../../models/StudentParticipation";
 import {Box, Breadcrumbs, Button, Container, Grid, ToggleButton, ToggleButtonGroup, Typography,} from "@mui/material";
 import {Cached, RadioButtonChecked} from "@mui/icons-material";
 import {useGetStudentParticipations} from "../../hooks/useStudentParticipation";
@@ -162,7 +162,7 @@ function Supervise() {
         };
     }, [sessionId]);
 
-    if (statusGettingStudents === 'loading' || statusGettingStudents==='error'|| !qStudents) {
+    if (statusGettingStudents === 'loading' || statusGettingStudents === 'error' || !qStudents) {
         if (!refresh) setRefresh(true);
     } else if (statusGettingStudents === 'success' && refresh) {
         if (qStudents.length > 0) setFocusedStudent(qStudents[0]);

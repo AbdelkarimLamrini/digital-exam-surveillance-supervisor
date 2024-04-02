@@ -1,4 +1,4 @@
-import {StudentParticipation} from "../../models/StudentParticipationDto";
+import {StudentParticipation} from "../../models/StudentParticipation";
 import React, {useState} from "react";
 import {TabContext, TabList, TabPanel} from "@mui/lab";
 import {Box, Skeleton, Tab} from "@mui/material";
@@ -19,7 +19,7 @@ function SuperviseSidebar({students, focusedStudent, statusGettingStudents, onCl
     if (statusGettingStudents === "error" || !students) {
         content = <p>Error loading students</p>;
     } else if (statusGettingStudents === 'loading' || students.length === 0) {
-        content = [...Array(5)].map(() =>(
+        content = [...Array(5)].map(() => (
             <Skeleton variant="rectangular" width="100%" height={100} sx={{mb: 1}}/>
         ));
     } else {

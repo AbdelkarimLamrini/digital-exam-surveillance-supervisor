@@ -7,6 +7,7 @@ export interface RecordingDto {
     endTime: string;
 
 }
+
 export class Recording {
     id: number;
     participationId: number;

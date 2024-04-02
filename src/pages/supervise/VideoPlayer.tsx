@@ -1,6 +1,6 @@
 import ReactPlayer, {Config} from "react-player";
 import React, {RefObject} from "react";
-import {StudentParticipation} from "../../models/StudentParticipationDto";
+import {StudentParticipation} from "../../models/StudentParticipation";
 import {Box, Skeleton} from "@mui/material";
 
 const config: Config = {

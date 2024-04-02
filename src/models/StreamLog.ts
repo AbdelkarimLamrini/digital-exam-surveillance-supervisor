@@ -1,4 +1,4 @@
-import {ConnectionStatus} from "./StudentParticipationDto";
+import {ConnectionStatus} from "./StudentParticipation";
 
 export interface StreamLogDto {
     participationId: number;
