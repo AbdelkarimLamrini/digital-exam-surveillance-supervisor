@@ -1,58 +1,50 @@
-import {useMutation, useQueryClient} from "react-query";
-import {startRecording, stopRecording} from "../services/recordService";
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import {getRecordings, startRecording, stopRecording} from "../services/recordingService";
 
-export function useStartRecording(invalidateQueryKey = "recordings") {
-    const queryClient = useQueryClient();
-
-    const {
-        mutate,
-        isLoading: isLoadingStartingRecording,
-        isError: isErrorStartingRecording,
-        error: errorStartingRecording,
-        isSuccess: isSuccessStartingRecording,
-    } = useMutation((studentParticipationId: string) => startRecording(studentParticipationId), {
-        onSuccess: () => {
-            queryClient.invalidateQueries([invalidateQueryKey]);
-        },
-        onError: (error) => {
-            console.error('Error starting recording:', error);
-        },
-    });
+export function useGetRecordings(participationId: number) {
+    const query = useQuery(["student-participations", participationId, "recordings"], () => getRecordings(participationId));
 
     return {
-        startRecordingMutate: mutate,
+        recordings: query.data,
+        errorGettingRecordings: query.error,
+        statusGettingRecordings: query.status
+    };
+}
+
+export function useStartRecording() {
+    const {
+        mutate: mutateStartRecording,
+        isLoading: isLoadingStartingRecording,
+        error: errorStartingRecording,
+    } = useMutation((participationId: number) => startRecording(participationId));
+
+    return {
+        mutateStartRecording,
         isLoadingStartingRecording,
-        isErrorStartingRecording,
         errorStartingRecording,
-        isSuccessStartingRecording,
     };
 }
 
 
-export function useStopRecording(invalidateQueryKey = "recordings") {
+export function useStopRecording() {
     const queryClient = useQueryClient();
+    let id: number;
 
     const {
-        mutate,
+        mutate: mutateStopRecording,
         isLoading: isLoadingStoppingRecording,
-        isError: isErrorStoppingRecording,
         error: errorStoppingRecording,
-        isSuccess: isSuccessStoppingRecording,
-    } = useMutation((studentParticipationId: string) => stopRecording(studentParticipationId), {
-        onSuccess: () => {
-            queryClient.invalidateQueries([invalidateQueryKey]);
-        },
-        onError: (error) => {
-            console.error('Error stopping recording:', error);
-        },
+    } = useMutation((participationId: number) => {
+        id = participationId;
+        return stopRecording(participationId)
+    }, {
+        onSuccess: () => queryClient.invalidateQueries(["student-participations", id, "recordings"])
     });
 
     return {
-        stopRecordingMutate: mutate,
+        mutateStopRecording,
         isLoadingStoppingRecording,
-        isErrorStoppingRecording,
         errorStoppingRecording,
-        isSuccessStoppingRecording,
     };
 }
 

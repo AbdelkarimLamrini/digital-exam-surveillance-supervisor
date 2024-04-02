@@ -37,7 +37,10 @@ export function longNumericDateTime(date: Date) {
     return `${dateStr} ${timeStr}`;
 }
 
-export function shortTime(date: Date) {
+export function shortTime(date: Date | null) {
+    if (!date) {
+        return 'N/A';
+    }
     return date.toLocaleTimeString(undefined, {
         hour: '2-digit',
         minute: '2-digit',

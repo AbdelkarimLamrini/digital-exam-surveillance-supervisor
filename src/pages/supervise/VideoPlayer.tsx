@@ -1,6 +1,6 @@
 import ReactPlayer, {Config} from "react-player";
 import React, {RefObject} from "react";
-import {StudentParticipation} from "../../models/StudentParticipation";
+import {StudentParticipation} from "../../models/StudentParticipationDto";
 import {Box, Skeleton} from "@mui/material";
 
 const config: Config = {
@@ -27,13 +27,13 @@ interface VideoPlayerProps {
 function VideoPlayer({playerRef, focusedStudent, onError}: VideoPlayerProps) {
     if (!focusedStudent) {
         return (
-            <Box sx={{mb: '1em', width: '100%', aspectRatio: '16/9'}}>
+            <Box sx={{width: '100%', aspectRatio: '16/9'}}>
                 <Skeleton variant="rectangular" width="100%" height="100%"/>
             </Box>
         );
     }
     return (
-        <Box sx={{mb: '1em', width: '100%'}}>
+        <Box sx={{width: '100%'}}>
             <ReactPlayer
                 ref={playerRef}
                 url={focusedStudent.hlsStreamUrl}
