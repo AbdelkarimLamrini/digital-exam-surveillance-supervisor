@@ -24,7 +24,7 @@ function ExamDetail() {
         <Container>
             <Typography variant="h2" component="h1">Exam details</Typography>
             <Breadcrumbs sx={{my: 2}}>
-                <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
+                <LinkRouter to={'/exams'}>Exams</LinkRouter>
                 <Typography>{exam.name}</Typography>
             </Breadcrumbs>
             <Grid container spacing={2} sx={{my: 2}}>
