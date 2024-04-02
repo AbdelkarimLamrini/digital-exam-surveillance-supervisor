@@ -74,8 +74,8 @@ function CreateExam() {
         <Container>
             <Typography variant="h2" component="h1">Edit exam</Typography>
             <Breadcrumbs sx={{my: 2}}>
-                <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
-                <LinkRouter to={`/exams/${examId}`} underline="hover" color="inherit">{exam.name}</LinkRouter>
+                <LinkRouter to={'/exams'}>Exams</LinkRouter>
+                <LinkRouter to={`/exams/${examId}`}>{exam.name}</LinkRouter>
                 <Typography>Edit</Typography>
             </Breadcrumbs>
             <Grid container spacing={2} sx={{my: 2}}>

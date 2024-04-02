@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {ConnectionStatus, StudentParticipation,} from "../../models/StudentParticipation";
 import {
-    Alert,
-    Box,
+    Box, Breadcrumbs,
     Button,
     Container,
     Grid,
@@ -29,6 +28,8 @@ import moment from "moment";
 import MovieIcon from "@mui/icons-material/Movie";
 import Link from "@mui/material/Link";
 import {useGetExamSessionDetails} from "../../hooks/useExamSession";
+import FloatingAlert from "../../components/FloatingAlert";
+import LinkRouter from "../../components/LinkRouter";
 
 interface RecordingDetails {
     id: number;
@@ -320,133 +321,119 @@ function Supervise() {
     }
 
     return (
-        <>
-            {showVideoAlert && (
-                <Alert
-                    severity={"warning"}
-                    onClose={() => setShowVideoAlert(false)}
-                    sx={{
-                        position: "fixed",
-                        top: 20,
-                        left: "30%",
-                        right: "30%",
-                        zIndex: 1000,
-                    }}
-                >
-                    There was an error loading the live stream. Please try again.
-                </Alert>
-            )}
-            <Container maxWidth={"xl"}>
-                <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                my: 1,
-                            }}
-                        >
-                            <Typography variant="h5">
-                                {statusGettingExamSessionDetails === "loading"
-                                    ? "Loading exam info..."
-                                    : examSession
-                                        ? `${examSession.examName} - ${examSession.classRoomId}`
-                                        : "Exam Info Not Found"}
-                            </Typography>
+        <Container maxWidth="xl">
+            <FloatingAlert severity="warning" show={showVideoAlert}
+                           onClose={() => setShowVideoAlert(false)}>
+                There was an error loading the live stream. Please try again.
+            </FloatingAlert>
+            <Breadcrumbs sx={{my:1}}>
+                <LinkRouter to={'/exams'}>Exams</LinkRouter>
+                <LinkRouter to={`/exams/${examSession?.examId}`}>{examSession?.examName}</LinkRouter>
+                <Typography>{examSession?.classRoomId}</Typography>
+            </Breadcrumbs>
+            <Grid container spacing={2}>
+                <Grid item xs={9}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            my: 1,
+                        }}
+                    >
+                        <Typography variant="h5">
+                            {statusGettingExamSessionDetails === "loading"
+                                ? "Loading exam info..."
+                                : examSession
+                                    ? `${examSession.examName} in ${examSession.classRoomId}`
+                                    : "Exam Info Not Found"}
+                        </Typography>
 
-                            <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center", gap: 1}}
-                                     onClick={handleToggleButtonGroupClick}
-                                >
-                                    <Typography variant="body1">
-                                        {manualMode ? "Manual mode" : "Carousel mode"}
-                                    </Typography>
-                                </Box>
-
-                                <ToggleButtonGroup
-                                    value={intervalMs}
-                                    exclusive
-                                    onChange={handleSetIntervalMs}
-                                    aria-label="Interval for random student selection"
-                                >
-                                    <ToggleButton value="120000" aria-label="2 minute">
-                                        2 &nbsp;min
-                                    </ToggleButton>
-                                    <ToggleButton value="60000" aria-label="1 minute">
-                                        1 &nbsp;min
-                                    </ToggleButton>
-                                    <ToggleButton value="30000" aria-label="30 seconds">
-                                        30 sec
-                                    </ToggleButton>
-                                    <ToggleButton value="10000" aria-label="10 seconds">
-                                        10 sec
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
-                            </Box>
-                        </Box>
-                        <Box sx={{width: "100%", mb: 3}}>
-                            <VideoPlayer
-                                playerRef={playerRef}
-                                focusedStudent={focusedStudent}
-                                onError={() => {
-                                    console.error(
-                                        "Error loading stream: ",
-                                        focusedStudent?.hlsStreamUrl
-                                    );
-                                    setShowVideoAlert(true);
-                                    setEnableReload(true);
-                                }}
-                            />
-                        </Box>
-                        <Box sx={{display: "flex", justifyContent: "space-between"}}>
-                            <Box>
-                                <Typography variant="caption">
-                                    {focusedStudent?.studentId} - {focusedStudent?.email}
+                        <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
+                            <Box sx={{display: "flex", alignItems: "center", gap: 1}}
+                                 onClick={handleToggleButtonGroupClick}
+                            >
+                                <Typography variant="body1">
+                                    {manualMode ? "Manual mode" : "Carousel mode"}
                                 </Typography>
-                                <Typography variant="h6">{focusedStudent?.fullName}</Typography>
-                                {/* <Typography variant="body1">
-                                    In the future, display the classroom layout here, with the
-                                    student's position highlighted.
-                                </Typography>*/}
                             </Box>
-                            <Box>
-                                <Button
-                                    variant="contained"
-                                    color="info"
-                                    startIcon={<Cached/>}
-                                    onClick={handleClickRefresh}
-                                    // disabled={!enableReload}
-                                >
-                                    "Reload Stream"
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="error"
-                                    startIcon={<RadioButtonChecked/>}
-                                    onClick={handleStartRecordingClick}
-                                    disabled={isLoadingStartingRecording || !focusedStudent}
-                                >
-                                    {isLoadingStartingRecording
-                                        ? "Starting..."
-                                        : focusedStudent?.recording
-                                            ? "Stop Recording"
-                                            : "Start Recording"}
-                                </Button>
-                            </Box>
+
+                            <ToggleButtonGroup
+                                value={intervalMs}
+                                exclusive
+                                onChange={handleSetIntervalMs}
+                                aria-label="Interval for random student selection"
+                            >
+                                <ToggleButton value="120000" aria-label="2 minute">
+                                    2 &nbsp;min
+                                </ToggleButton>
+                                <ToggleButton value="60000" aria-label="1 minute">
+                                    1 &nbsp;min
+                                </ToggleButton>
+                                <ToggleButton value="30000" aria-label="30 seconds">
+                                    30 sec
+                                </ToggleButton>
+                                <ToggleButton value="10000" aria-label="10 seconds">
+                                    10 sec
+                                </ToggleButton>
+                            </ToggleButtonGroup>
                         </Box>
-                        {renderRecordingsTable()}
-                    </Grid>
-                    <Grid item xs={3}>
-                        <SidebarSupervise
-                            students={students}
-                            onClick={handleClickStudent}
-                            focusedStudent={focusedStudent}
-                        />
-                    </Grid>
+                    </Box>
+                    <VideoPlayer
+                        playerRef={playerRef}
+                        focusedStudent={focusedStudent}
+                        onError={() => {
+                            console.error(
+                                "Error loading stream: ",
+                                focusedStudent?.hlsStreamUrl
+                            );
+                            setShowVideoAlert(true);
+                            setEnableReload(true);
+                        }}
+                    />
+                    <Box sx={{display: "flex", justifyContent: "space-between"}}>
+                        <Box>
+                            <Typography variant="caption">
+                                {focusedStudent?.studentId} - {focusedStudent?.email}
+                            </Typography>
+                            <Typography variant="h6">{focusedStudent?.fullName}</Typography>
+                        </Box>
+                        <Box>
+                            <Button
+                                variant="contained"
+                                color="info"
+                                startIcon={<Cached/>}
+                                onClick={handleClickRefresh}
+                                // disabled={!enableReload}
+                            >
+                                "Reload Stream"
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                startIcon={<RadioButtonChecked/>}
+                                onClick={handleStartRecordingClick}
+                                disabled={isLoadingStartingRecording || !focusedStudent}
+                            >
+                                {isLoadingStartingRecording
+                                    ? "Starting..."
+                                    : focusedStudent?.recording
+                                        ? "Stop Recording"
+                                        : "Start Recording"}
+                            </Button>
+                        </Box>
+                    </Box>
+                    {renderRecordingsTable()}
                 </Grid>
-            </Container>
-        </>
+                <Grid item xs={3}>
+                    <SidebarSupervise
+                        students={students}
+                        onClick={handleClickStudent}
+                        focusedStudent={focusedStudent}
+                    />
+                </Grid>
+            </Grid>
+        </Container>
     );
 }
 

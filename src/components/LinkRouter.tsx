@@ -8,7 +8,7 @@ interface LinkRouterProps extends LinkProps {
 }
 
 function LinkRouter(props: LinkRouterProps) {
-    return <Link {...props} component={RouterLink as any}/>;
+    return <Link component={RouterLink as any} underline="hover" color="inherit" {...props}/>;
 }
 
 export default LinkRouter;
