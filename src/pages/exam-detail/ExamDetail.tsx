@@ -1,9 +1,10 @@
 import React from "react";
-import {Box, Button, Container, Grid, Typography} from "@mui/material";
+import {Box, Breadcrumbs, Button, Container, Grid, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetExamDetails} from "../../hooks/useExam";
 import {longNumericDateTime, longPrettyDate, shortTime} from "../../utils/date";
 import ExamSessionTable from "./ExamSessionTable";
+import LinkRouter from "../../components/LinkRouter";
 
 function ExamDetail() {
     const navigate = useNavigate();
@@ -22,7 +23,11 @@ function ExamDetail() {
     return (
         <Container>
             <Typography variant="h3" component="h1">Exam details</Typography>
-            <Grid container spacing={2} sx={{my: 4}}>
+            <Breadcrumbs sx={{my: 2}}>
+                <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
+                <Typography>{exam.name}</Typography>
+            </Breadcrumbs>
+            <Grid container spacing={2} sx={{my: 2}}>
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="h2">Exam info</Typography>
                     <Box sx={{display: 'flex', gap: '3em', my: 2}}>

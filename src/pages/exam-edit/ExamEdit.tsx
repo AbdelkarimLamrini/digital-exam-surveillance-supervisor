@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import dayjs  from 'dayjs';
-import {Button, Container, Grid, Typography} from '@mui/material';
+import dayjs from 'dayjs';
+import {Breadcrumbs, Container, Grid, Typography} from '@mui/material';
 import {useGetExamDetails, useUpdateExam} from '../../hooks/useExam';
 import {ExamDto, NewExamDto} from '../../models/Exam';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -8,6 +8,7 @@ import {RestError} from "../../models/RestError";
 import ExamSessionTable from "./ExamSessionTable";
 import ExamForm, {ExamFormState} from "../../components/ExamForm";
 import {useQueryClient} from "react-query";
+import LinkRouter from "../../components/LinkRouter";
 
 const initialFormState: ExamFormState = {
     id: '',
@@ -51,7 +52,7 @@ function CreateExam() {
         mutateUpdateExam({id: examId, data: newExamDto}, {
             onSuccess: async (examDto: ExamDto) => {
                 navigate(`/exams/${examDto.id}`);
-                if(examId !== examDto.id) {
+                if (examId !== examDto.id) {
                     queryClient.removeQueries(['exams', examId]);
                     await queryClient.invalidateQueries(['exams']);
                 }
@@ -72,13 +73,14 @@ function CreateExam() {
     return (
         <Container>
             <Typography variant="h3" component="h1">Edit exam</Typography>
-            <Button onClick={() => navigate(`/exams/${examId}`)}
-                    variant="outlined" color="primary">
-                Details
-            </Button>
-            <Grid container spacing={2} sx={{my: 4}}>
+            <Breadcrumbs sx={{my: 2}}>
+                <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
+                <LinkRouter to={`/exams/${examId}`} underline="hover" color="inherit">{exam.name}</LinkRouter>
+                <Typography>Edit</Typography>
+            </Breadcrumbs>
+            <Grid container spacing={2} sx={{my: 2}}>
                 <Grid item xs={12} md={6}>
-                    <Typography variant="h4" component="h2" sx={{mb:'0.5em'}}>Exam info</Typography>
+                    <Typography variant="h4" component="h2" sx={{mb: '0.5em'}}>Exam info</Typography>
                     <ExamForm examFormState={examFormState} handleSubmit={editExam} error={error}/>
                 </Grid>
                 <Grid item xs={12} md={6}>
