@@ -72,7 +72,7 @@ function CreateExam() {
 
     return (
         <Container>
-            <Typography variant="h3" component="h1">Edit exam</Typography>
+            <Typography variant="h2" component="h1">Edit exam</Typography>
             <Breadcrumbs sx={{my: 2}}>
                 <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
                 <LinkRouter to={`/exams/${examId}`} underline="hover" color="inherit">{exam.name}</LinkRouter>

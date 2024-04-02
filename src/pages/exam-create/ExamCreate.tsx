@@ -41,9 +41,7 @@ function ExamCreate() {
 
     return (
         <Container>
-            <Typography variant="h2" component="h1">
-                Create a new exam
-            </Typography>
+            <Typography variant="h2" component="h1">Create exam</Typography>
             <Breadcrumbs sx={{my: 2}}>
                 <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
                 <Typography>New</Typography>

@@ -22,7 +22,7 @@ function ExamDetail() {
 
     return (
         <Container>
-            <Typography variant="h3" component="h1">Exam details</Typography>
+            <Typography variant="h2" component="h1">Exam details</Typography>
             <Breadcrumbs sx={{my: 2}}>
                 <LinkRouter to={'/exams'} underline="hover" color="inherit">Exams</LinkRouter>
                 <Typography>{exam.name}</Typography>
@@ -31,7 +31,7 @@ function ExamDetail() {
                 <Grid item xs={12} md={6}>
                     <Typography variant="h4" component="h2">Exam info</Typography>
                     <Box sx={{display: 'flex', gap: '3em', my: 2}}>
-                        <Box>
+                        <Box sx={{display: 'flex', flexDirection: 'column', gap: '0.2em'}}>
                             <Typography>Name</Typography>
                             <Typography>ID</Typography>
                             <Typography>Creator</Typography>
@@ -40,7 +40,7 @@ function ExamDetail() {
                             <Typography>Start/End</Typography>
 
                         </Box>
-                        <Box>
+                        <Box sx={{display: 'flex', flexDirection: 'column', gap: '0.2em'}}>
                             <Typography>{exam.name}</Typography>
                             <Typography>{exam.id}</Typography>
                             <Typography>{exam.creatorName.length ? exam.creatorName : '/'}</Typography>
